@@ -1,9 +1,9 @@
 #include <GL/glut.h>
-#include <math.h>
 
-float tx = 0.0f, ty = 0.0f;      // Translation
-float angle = 0.0f;              // Rotation
-float sx = 1.0f, sy = 1.0f;      // Scaling
+// Transformation variables
+float tx = 0.0f, ty = 0.0f;
+float angle = 0.0f;
+float sx = 1.0f, sy = 1.0f;
 
 void display()
 {
@@ -16,16 +16,21 @@ void display()
     glRotatef(angle, 0.0f, 0.0f, 1.0f);
     glScalef(sx, sy, 1.0f);
 
-    // Draw Polygon (Hexagon)
-    glColor3f(0.2f, 0.7f, 1.0f);
-
+    // Draw Polygon
     glBegin(GL_POLYGON);
-        glVertex2f(-0.3f,  0.5f);
-        glVertex2f( 0.3f,  0.5f);
-        glVertex2f( 0.6f,  0.0f);
-        glVertex2f( 0.3f, -0.5f);
-        glVertex2f(-0.3f, -0.5f);
-        glVertex2f(-0.6f,  0.0f);
+
+        glColor3f(1.0f, 0.0f, 0.0f);   // Red
+        glVertex2f(-0.4f, -0.4f);
+
+        glColor3f(0.0f, 1.0f, 0.0f);   // Green
+        glVertex2f(0.4f, -0.4f);
+
+        glColor3f(0.0f, 0.0f, 1.0f);   // Blue
+        glVertex2f(0.5f, 0.4f);
+
+        glColor3f(1.0f, 1.0f, 0.0f);   // Yellow
+        glVertex2f(-0.5f, 0.4f);
+
     glEnd();
 
     glFlush();
@@ -35,30 +40,17 @@ void keyboard(unsigned char key, int x, int y)
 {
     switch(key)
     {
-        case 'a':
-            tx -= 0.05f;
-            break;
+        // Translation
+        case 'a': tx -= 0.1f; break;
+        case 'd': tx += 0.1f; break;
+        case 'w': ty += 0.1f; break;
+        case 's': ty -= 0.1f; break;
 
-        case 'd':
-            tx += 0.05f;
-            break;
+        // Rotation
+        case 'r': angle += 10.0f; break;
+        case 't': angle -= 10.0f; break;
 
-        case 'w':
-            ty += 0.05f;
-            break;
-
-        case 's':
-            ty -= 0.05f;
-            break;
-
-        case 'r':
-            angle += 10.0f;
-            break;
-
-        case 't':
-            angle -= 10.0f;
-            break;
-
+        // Scaling
         case '+':
             sx += 0.1f;
             sy += 0.1f;
@@ -67,16 +59,11 @@ void keyboard(unsigned char key, int x, int y)
         case '-':
             sx -= 0.1f;
             sy -= 0.1f;
-            if (sx < 0.1f)
-            {
-                sx = 0.1f;
-                sy = 0.1f;
-            }
+            if(sx < 0.1f) sx = sy = 0.1f;
             break;
 
-        case 27:
+        case 27:   // ESC key
             exit(0);
-            break;
     }
 
     glutPostRedisplay();
@@ -88,17 +75,19 @@ void init()
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(-2, 2, -2, 2);
 
-    glMatrixMode(GL_MODELVIEW);
+    gluOrtho2D(-1, 1, -1, 1);
+
+    // Enable Smooth Shading
+    glShadeModel(GL_SMOOTH);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(700, 700);
-    glutCreateWindow("2D Polygon - Translation, Rotation & Scaling");
+    glutCreateWindow("2D Polygon with Transformations");
 
     init();
 
